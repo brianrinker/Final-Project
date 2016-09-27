@@ -1,5 +1,5 @@
 
-#F<h1 id="final-project-ideas"><a name="final-project-ideas" href="#final-project-ideas"></a>Final Project Ideas</h1>
+#<h1 id="final-project-ideas"><a name="final-project-ideas" href="#final-project-ideas"></a>Final Project Ideas</h1>
 <p><strong>Heroin Valley:</strong> My master’s project is narrative text story that explores treatment options for heroin users in a small rural California town in Kern County. </p>
 <p><strong>Goals:</strong> Visualize the lack of treatment options. </p>
 <p><strong>Data:</strong> </p>
