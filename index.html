@@ -1,60 +1,154 @@
+
+
 <!DOCTYPE html>
 <html>
+  <head>
+    <title>The stenches of the Bay Area | CartoDB.js</title>
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8"/>
+    <link rel="shortcut icon" href="http://cartodb.com/assets/favicon.ico" />
 
-<head>
-  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-  <title>Final Project</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link href="css/bootstrap.min.css" rel="stylesheet"> 
-</head>
+   
+    <style>
+      html, body, #map {
+        height: 100%;
+        padding: 0;
+        margin: 0;
+        background: black;
+      }
+ 
+      #layer_selector {
+        position: absolute;
+        top: 20px;
+        right: 20px;
+        padding: 0;
+      }
+ 
+      #layer_selector ul {
+        padding: 0; margin: 0;
+        list-style-type: none;
+      }
+ 
+      #layer_selector li {
+        border-bottom: 1px solid #999;
+        padding: 15px 30px;
+        font-family: "Helvetica", Arial;
+        font-size: 13px;
+        color: #444;
+        cursor: auto;
+      }
+ 
+      #layer_selector li:hover {
+        background-color: #F0F0F0;
+        cursor: pointer;
+      }
+ 
+      #layer_selector li.selected {
+        background-color: #EEE;
+      }
+    </style>
+ 
+    <link rel="stylesheet" href="http://libs.cartocdn.com/cartodb.js/v3/themes/css/cartodb.css" />
+    <!--[if lte IE 8]>
+        <link rel="stylesheet" href="http://libs.cartocdn.com/cartodb.js/v3/themes/css/cartodb.ie.css" />
+    <![endif]-->
+  </head>
+  <body>
 
-<body class="markdown github">
-
-	<header class="navbar navbar-default">
-	<!-- <header class="navbar-default navbar-fixed-top"> -->
-		<div class="container">
-			<nav role="navigation">
-				<div class="navbar-header">
-					<button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
-						<span class="sr-only">Toggle navigation</span>
-						<span class="icon-bar"></span>
-						<span class="icon-bar"></span>
-						<span class="icon-bar"></span>
-					</button>
-					<a href="index.html" class="navbar-brand">Week 4 exercise</a>
-				</div> <!-- /.navbar-header -->
-				<!-- Collect the nav links, forms, and other content for toggling -->
-				<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-					<ul class="nav navbar-nav">
-						<li class="dropdown">
-							<a href="#" class="dropdown-toggle" data-toggle="dropdown">Links<b class="caret"></b></a>
-							<ul class="dropdown-menu">
-								<li><a href="link1.html">Link 1</a></li>
-								<li><a href="link2.html">Link 2</a></li>	
-							</ul>
-						</li>
-						<li><a href="mailto:brianrinker@gmail.com">Email</a></li>					
-					</ul>
-				</div><!-- /.navbar-collapse -->
-			</nav>
-		</div> <!-- /.navbar-header -->
-	</header>
-
-	<div class="container">
-
-	<h1 id="final-project-ideas"><a name="final-project-ideas" href="#final-project-ideas"></a>Final Project Ideas</h1>
-<p><strong>Heroin Valley:</strong> My master’s project is narrative text story that explores treatment options for heroin users in a small rural California town in Kern County. </p>
-<p><strong>Goals:</strong> Visualize the lack of treatment options. </p>
-<p><strong>Data:</strong> </p>
-<ul>
-<li>Buprenorphine physician locator <a href="/http://www.samhsa.gov/medication-assisted-treatment/physician-program-data/treatment-physician-locator">data set</a>. </li><li>Methadone clinic location. Small data set on the California Department of Healthcare Service website. </li></ul>
-<p>Basically I want to show how many doctors prescribe buprenorphine in and around Kern County and how far they are located from the Kern River Valley, my area of interest. I want to do the same thing with methadone clinics. </p>
-<p>I think using tableau to create a map would be cool. Somehow hone in the distance people would have to travel and make clear that there aren’t too many of these doctors and clinics. </p>
-<p>I also have some overdose death data and making a per capita chart could really emphasize the high overdose death rate in the rural community. Even using per capita, is it ok to compare an area of 12,000 to a county wide population of 800,000? </p>
-
-
-	</div> <!-- /.container -->
-	<script src="http://code.jquery.com/jquery.min.js"></script>
-	<script src="js/bootstrap.min.js"></script>
-</body>
+    <div id="map"></div>
+    <div id="layer_selector" class="cartodb-infobox">
+      <ul>
+        <li id="1" class="selected">All Odors</li>
+        <li id="2">Garbage</li>
+        <li id="3">Burning Chemicals</li>
+        <li id="4">Just Terrible</li>
+        <li id="5">Rotten Sewage</li>
+        
+     
+   </ul>
+    </div>
+ 
+    <!-- include cartodb.js library -->
+    <script src="http://libs.cartocdn.com/cartodb.js/v3/cartodb.js"></script>
+ 
+    <script>
+      var selectedLayer;
+      // create layer selector
+      function createSelector(layers) {
+        var sql = new cartodb.SQL({ user: 'documentation' });
+ 
+        var $options = $('#layer_selector li');
+        $options.click(function(e) {
+          // get the area of the selected layer
+          var $li = $(e.target);
+          var layer = $li.attr('id');
+          if(selectedLayer != layer ){
+            // definitely more elegant ways to do this, but went for
+            // ease of understanding
+            if (layer == '1'){
+              layers.getSubLayer(0).show(); // All Odors
+              layers.getSubLayer(1).hide(); // Garbage
+              layers.getSubLayer(2).hide(); // Burning Chemicals
+              layers.getSubLayer(3).hide(); // Just Terrible
+              layers.getSubLayer(4).hide(); // Rotten Sewage
+            }
+            else if (layer == '2') {
+              layers.getSubLayer(0).hide();
+              layers.getSubLayer(1).show();
+              layers.getSubLayer(2).hide();
+              layers.getSubLayer(3).hide();
+              layers.getSubLayer(4).hide();
+            }
+            else if (layer == '3') {
+              layers.getSubLayer(0).hide();
+              layers.getSubLayer(1).hide();
+              layers.getSubLayer(2).show();
+              layers.getSubLayer(3).hide();
+              layers.getSubLayer(4).hide();
+            }  
+              else if (layer == '4') {
+              layers.getSubLayer(0).hide();
+              layers.getSubLayer(1).hide();
+              layers.getSubLayer(2).hide();
+              layers.getSubLayer(3).show();
+              layers.getSubLayer(4).hide();
+             } 
+            else {
+              layers.getSubLayer(0).hide();
+              layers.getSubLayer(1).hide();
+              layers.getSubLayer(2).hide();
+              layers.getSubLayer(3).hide();
+              layers.getSubLayer(4).show();
+            }
+          }
+        });
+      }
+      
+ 
+      var layerN = {};
+      function main() {
+        var map = L.map('map', { 
+          zoomControl: true,
+          center: [38, -122],
+          zoom: 8
+        });
+        // get the currently selected style
+        selectedStyle = $('li.selected').attr('id');
+ 
+        cartodb.createLayer(map, 'https://brinker.carto.com/api/v2/viz/b86218ba-b204-11e6-99af-0e3ebc282e83/viz.json')
+        .addTo(map)
+        .done(function(layers) {
+          createSelector(layers);
+        })
+        .error(function(err) {
+          console.log(err);
+        });
+      }
+ 
+      window.onload = main;
+    </script>
+  </body>
 </html>
+LICENSE#
+
+This block appears to have no license. Please contact the author to request a license.
